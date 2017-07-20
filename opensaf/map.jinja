@@ -1,0 +1,93 @@
+{% macro sls_block(dict) %}
+    {% for key, value in dict.items() %}
+    - {{ key }}: {{ value|json() }}
+    {% endfor %}
+{% endmacro %}
+
+{% set opensaf = salt['pillar.get']('opensaf', {
+    'lookup': salt['grains.filter_by']({
+        'Debian': {
+        },
+        'CentOS': {
+        },
+        'RedHat': {
+        },
+        'Suse': {
+        },
+        'Arch': {
+        },
+        'Gentoo': {
+        },
+    }, default='Debian' ),
+    'build_from_source': True,
+    'install_from_source': False,
+    'install_from_rpm': True,
+    'source': {
+        'opts': {},
+        'version': '5.2.0',
+        'url': 'https://downloads.sourceforge.net/project/opensaf/releases/opensaf-5.2.0.tar.gz',
+        'urlhash': 'sha1=fae4ec60517f7c7f5ad07772a487826d1bb34e15',
+        'archive_type': 'tar',
+        'src_root': '/usr/local/src/opensaf-5.2.0',
+        'silence_compiler': True,
+        'configure_flags': 'CPPFLAGS="-Wno-error=unused-variable -Wno-error=format-overflow" --enable-java --enable-python',
+        'make_flags': 'rpm',
+        'ldconfig': True,
+        'sbin_dir' : '/usr/local/sbin',
+    },
+    'package': {
+        'opts': {},
+        'name': 'opensaf',
+        'repodir': '/usr/local/share/opensaf/rpms',
+    },
+    'service': {
+        'conf_file': '/etc/opensaf/opensaf.conf',
+        'pid_file': '/run/opensaf.pid',
+        'service': 'opensafd',
+        'enable': True,
+        'opts': {},
+        'dtmd': {
+            'conf_file': '/etc/opensaf/dtmd.conf',
+            'opts': {},
+            'config': {
+                'export DTM_ENV_HEALTHCHECK_KEY=': "Default"
+                'DTM_CLUSTER_ID=': 1
+                'DTM_NODE_IP=': 127.0.0.1
+                'DTM_MCAST_ADDR=':
+                'DTM_TCP_LISTENING_PORT=': 6700
+                'DTM_UDP_BCAST_SND_PORT=': 6800
+                'DTM_UDP_BCAST_REV_PORT=': 6900
+                'DTM_BCAST_FRE_MSECS=': 250
+                'DTM_INI_DIS_TIMEOUT_SECS=': 5
+                'DTM_SKEEPALIVE=': 1
+                'DTM_TCP_KEEPIDLE_TIME=': 2
+                'DTM_TCP_KEEPALIVE_INTVL=': 1
+                'DTM_TCP_KEEPALIVE_PROBES=': 2
+                'DTM_TCP_USER_TIMEOUT=': 1500
+                'DTM_SOCK_SND_RCV_BUF_SIZE=': 65536
+                'DTM_INTRANODE_MAX_PROCESSES=': 100
+                },
+        },
+        'rde':
+            'conf_file': '/etc/opensaf/rde.conf',
+            'opts': {},
+            'config': {
+               'export RDE_DISCOVER_PEER_TIMEOUT=': 0
+                },
+        },
+        'immnd':
+            'conf_file': '/etc/opensaf/immnd.conf',
+            'opts': {},
+            'config': {
+               'export IMMSV_ROOT_DIRECTORY=': $pkgsysconfdir
+               'export IMMSV_LOAD_FILE=': imm.xml
+               'export IMMSV_NUM_NODES=': 1
+               'export IMMSV_MAX_WAIT=': 3
+               'export IMMSV_ENV_HEALTHCHECK_KEY=': "Default"
+                },
+        },
+        'imm':
+            'conf_file': '/etc/opensaf/imm.xml'
+        },
+    },
+}, merge=True) %}

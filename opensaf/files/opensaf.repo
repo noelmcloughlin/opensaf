@@ -1,0 +1,8 @@
+[opensaf]
+name=Opensaf 5.2.0
+failovermethod=priority
+baseurl=files:///usr/local/src/opensaf-5.2.0/rpm/RPMS/x86_64/
+enabled=1
+repo_gpgcheck=0
+type=rpm
+

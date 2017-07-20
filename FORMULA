@@ -1,0 +1,8 @@
+name: opensaf
+os: RedHat, Debian, Ubuntu, Suse, Gentoo
+os_family: RedHat, Debian, Suse, Gentoo
+version: 201707
+release: 1
+minimum_version: 2017.7
+summary: Formula for installing opensaf
+description: Formula for installing opensaf high availability solution

@@ -1,0 +1,54 @@
+  # These are usually set by grains in map.jinja
+
+opensaf:
+  projectname: opensaf
+  build_from_source: True
+  install_from_ppa: False
+  install_from_repo: False
+
+  # These are usually set by grains in map.jinja
+  lookup:
+    sbin_dir: /usr/sbin
+    # This is required for RedHat like distros (Amazon Linux) that don't follow semantic versioning for $releasever
+    rh_os_releasever: 7
+    # Currently it can be used on rhel/centos/suse when installing from repo
+    gpg_check: False
+
+  package:
+    packagename: opensaf
+    opts: {} # this partially exposes parameters of pkg.installed
+    # Set to 'stable' or 'nightly' accordingly ( https://launchpad.net/~mlemay/+archive/ubuntu/opensaf )
+    ppa_version: stable
+    ppa_stable: http://ppa.launchpad.net/opensaf/stable/ubuntu
+    ppa_unstable: http://ppa.launchpad.net/opensaf/ppa/ubuntu
+    ppa_keyid: 0A53F9FD
+
+  service:
+    servicename: opensaf
+    enable: True # Whether or not the service will be enabled/running or dead
+    user: opensaf
+    home: /var/spool/opensaf
+    binary: opensaf
+    conf_dir: /etc/opensaf
+    conf_file: opensaf.conf
+    pid_file: /run/opensaf.pid
+    opts: {} # this partially exposes parameters of service.running / service.dead
+
+  server:
+    opts: {}
+
+  # Source install
+  source:
+    opts: {}
+    version: 5.2.0
+    archive_type: tar.gz
+    source_url: https://downloads.sourceforge.net/project/opensaf/releases/opensaf-5.2.0.tar.gz
+    source_urlhash: sha1=fae4ec60517f7c7f5ad07772a487826d1bb34e15
+    source_root: /usr/local/src/opensaf-5.2.0
+    silence_compiler: True
+    build_deps: build-essential
+    configure_make: make -j2
+    make_install: make install
+    sbin_dir: /usr/local/sbin
+    },
+
