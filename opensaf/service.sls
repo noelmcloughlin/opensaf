@@ -15,8 +15,8 @@ include:
 {% if opensaf.install_from_source %}
 opensaf_systemd_service_file:
   file.managed:
-    - name: /lib/systemd/system/opensaf.service
-    - source: salt://opensaf/files/opensaf.service
+    - name: /lib/systemd/system/{{ opensaf.service.name }}.service
+    - source: salt://opensaf/files/{{ opensaf.service.name }}.service
 {% endif %} 
   
 opensaf_service:
