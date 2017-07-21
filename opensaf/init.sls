@@ -21,12 +21,39 @@ extend:
         - file: opensaf_rde_config
         - file: opensaf_immnd_config
         - file: opensaf_imm_config
-  opensaf_config:
+  opensaf_dtmd_config:
     file:
       - require:
         - cmd: opensaf_build
-        {% if opensaf.install_from_source %}
+        {% if opensaf.lookup.install_from_source %}
         - cmd: opensaf_install
         {% else %}
-        - pkg: opensaf_install
+        - pkg: opensaf_pkg_install
+        {% endif %}
+  opensaf_rde_config:
+    file:
+      - require:
+        - cmd: opensaf_build
+        {% if opensaf.lookup.install_from_source %}
+        - cmd: opensaf_install
+        {% else %}
+        - pkg: opensaf_pkg_install
+        {% endif %}
+  opensaf_immnd_config:
+    file:
+      - require:
+        - cmd: opensaf_build
+        {% if opensaf.lookup.install_from_source %}
+        - cmd: opensaf_install
+        {% else %}
+        - pkg: opensaf_pkg_install
+        {% endif %}
+  opensaf_imm_config:
+    file:
+      - require:
+        - cmd: opensaf_build
+        {% if opensaf.lookup.install_from_source %}
+        - cmd: opensaf_install
+        {% else %}
+        - pkg: opensaf_pkg_install
         {% endif %}

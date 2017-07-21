@@ -4,7 +4,7 @@
 
 {% from 'opensaf/map.jinja' import opensaf, sls_block with context %}
 
-{% if opensaf.install_from_source %}
+{% if opensaf.lookup.install_from_source %}
          ###### Todo: Check if opensaf uses syslog or not ??
 opensaf_log_dir:
   file.directory:
@@ -40,12 +40,10 @@ opensaf_immnd_config:
     - context:
         config: {{ opensaf.service.immnd.config|json() }}
 
-opensaf_imm_xml:
+opensaf_imm_config:
   file.managed:
     {{ sls_block(opensaf.service.imm.opts) }}
     - name: {{ opensaf.service.imm.conf_file }}
     - source: salt://opensaf/files/imm.xml
     - template: jinja
-    - context:
-        config: {{ opensaf.service.imm.config|json() }}
 

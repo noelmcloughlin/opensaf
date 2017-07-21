@@ -4,7 +4,7 @@
 
 {% from 'opensaf/map.jinja' import opensaf, sls_block with context %}
 
-opensaf_install:
+opensaf_pkg_install:
   pkg.installed:
     {{ sls_block(opensaf.package.opts) }}
     - name: {{ opensaf.package.name }}
@@ -18,14 +18,14 @@ opensaf_yum_repo:
   pkgrepo.managed:
     - name: opensaf_rpms
     - humanname: opensaf repo
-    - baseurl: 'file:///{{ opensaf.package.rpmdir }}'
+    - baseurl: file://{{ opensaf.source.repodir }}
     - enabled: True
     - require:
-      - cmd: opensaf_create_yum_repo
+      - cmd: opensaf_create_repo
     - require_in:
-      - pkg: opensaf_install
+      - pkg: opensaf_pkg_install
     - watch_in:
-      - pkg: opensaf_install
+      - pkg: opensaf_pkg_install
   {% endif %}
 
   {% if salt['grains.get']('os_family') == 'Suse' %}
@@ -33,13 +33,28 @@ opensaf_zypp_repo:
   pkgrepo.managed
     - name: opensaf_rpms
     - humanname: server_rpms
-    - baseurl: 'file:///{{ opensaf.package.rpmdir }}'
+    - baseurl: file://{{ opensaf.source.repodir }}
     - enabled: True
     - require_in:
-      - pkg: opensaf_install
+      - pkg: opensaf_pkg_install
     - watch_in:
-      - pkg: opensaf_install
+      - pkg: opensaf_pkg_install
   {% endif %}
+
+opensaf_remove_src:
+  file.missing:
+    - name: {{ opensaf.source.prefix }}/src/opensaf-{{ opensaf.source.version }}*
+    - require:
+      - pkg: opensaf_pkg_install
+    - onchanges:
+      - pkg: opensaf_pkg_install
+  pkgrepo.absent:
+    - name: opensaf_rpms
+    - humanname: server_rpms
+    - require:
+      - file: opensaf_remove_src
+    - onchanges:
+      - file: opensaf_remove_src
 
 {% endif %}
 
