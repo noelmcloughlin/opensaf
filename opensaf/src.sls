@@ -10,7 +10,7 @@ opensaf_build_dep:
     - name: apt-get -y install libxml2-dev
   {% elif salt['grains.get']('os_family') == 'RedHat' %}
   cmd.run:
-    - name: yum -y install libxml2-dev gcc gcc-c++ rpm-build ant
+    - name: yum -y install libxml2-dev gcc gcc-c++ rpm-build ant createrepo
   {% elif salt['grains.get']('os_family') == 'Suse' %}
   cmd.run:
     - name: zypper install -y libxml2-dev gcc gcc-c++ rpm-build ant
@@ -43,6 +43,9 @@ opensaf_build:
   cmd.run:
     - name: make {{opensaf.source.make_flags }}
     - cwd: {{ opensaf.source.src_root }}
+    - require_in:
+      - opensaf_install
+      - opensaf_repo_install
     - require:
       - cmd: opensaf_configure
     - onchanges:
@@ -67,7 +70,7 @@ opensaf_link:
       - cmd: opensaf_install
 
 {% if opensaf.source.make_flags == 'rpm' %}
-opensaf_repo_dir:
+opensaf_create_yum_repo:
   file.managed:
     - name: {{ opensaf.package.rpmdir }}
     - source: {{ opensaf.source.src_root }}/rpm/RPMS/x86_64
@@ -76,4 +79,12 @@ opensaf_repo_dir:
     - require_in:
       - pkgrepo: opensaf_yum_repo
       - pkgrepo: opensaf_zypp_repo
+    - require:
+      - cmd: opensaf_build
+    - onchanges:
+      - cmd: opensaf_build
+  cmd.run:
+    - name: createrepo {{ opensaf.package.rpmdir }}
+    - require:
+      - file: opensaf_create_yum_repo
 {% endif %}

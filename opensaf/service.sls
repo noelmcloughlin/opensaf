@@ -6,10 +6,11 @@
 {% set service_function = {True:'running', False:'dead'}.get(opensaf.service.enable) %}
 
 include:
-  {% if opensaf.install_from_source %}
+  {% if opensaf.build_from_source or opensaf.install_from_source %}
   - opensaf.src
-  {% else %}
-  - opensaf.pkg
+  {% endif %}
+  {% if opensaf.install_from_rpm %}
+  - opensaf.rpm
   {% endif %}
 
 {% if opensaf.install_from_source %}
@@ -25,10 +26,11 @@ opensaf_service:
     - name: {{ opensaf.service.name }}
     - enable: {{ opensaf.service.enable }}
     - require:
-      {% if opensaf.install_from_source %}
+      {% if opensaf.build_from_source or opensaf.install_from_source %}
       - sls: opensaf.src
-      {% else %}
-      - sls: opensaf.pkg
+      {% endif %}
+      {% if opensaf.install_from_rpm %}
+      - sls: opensaf.rpm
       {% endif %}
     - listen:
       {% if opensaf.install_from_source %}

@@ -1,6 +1,6 @@
 # opensaf.pkg
 #
-# Manages installation of opensaf from pkg.
+# Manages installation of opensaf from rpms built from source.
 
 {% from 'opensaf/map.jinja' import opensaf, sls_block with context %}
 
@@ -20,6 +20,8 @@ opensaf_yum_repo:
     - humanname: opensaf repo
     - baseurl: 'file:///{{ opensaf.package.rpmdir }}'
     - enabled: True
+    - require:
+      - cmd: opensaf_create_yum_repo
     - require_in:
       - pkg: opensaf_install
     - watch_in:
