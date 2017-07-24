@@ -11,7 +11,7 @@ opensaf_build_dep:
   {% elif salt['grains.get']('os_family') == 'RedHat' %}
   cmd.run:
     - name: yum -y install libtool libxml2-devel gcc gcc-c++ rpm-build ant createrepo
-  {% elif salt['grains.get']('os_family') == 'Suse' %}
+  {% elif salt['grains.get']('os_family') == 'Suse' or salt['grains.get']('os') == 'SUSE' %}
   cmd.run:
     - name: zypper install -y libtool libxml2-dev gcc gcc-c++ rpm-build ant
   {% else %}

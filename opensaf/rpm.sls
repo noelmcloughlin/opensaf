@@ -28,7 +28,7 @@ opensaf_yum_repo:
       - pkg: opensaf_pkg_install
   {% endif %}
 
-  {% if salt['grains.get']('os_family') == 'Suse' %}
+{% if salt['grains.get']('os_family') == 'Suse' or salt['grains.get']('os') == 'SUSE' %}
 opensaf_zypp_repo:
   pkgrepo.managed
     - name: opensaf_rpms
