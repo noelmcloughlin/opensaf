@@ -32,6 +32,7 @@ opensaf_download:
     - source_hash: {{ opensaf.source.urlhash }}
     - archive_format: {{ opensaf.source.archive_type }}
   {% if grains['saltversion'] < '2016.11.0' or opensaf.lookup.use_make_install %}
+    - tar_options: {{ opensaf.source.unpack_opts }}
     - if_missing: {{ opensaf.source.prefix }}/lib/opensaf/opensafd-{{ opensaf.version }}
   {% endif %}
     - require:
