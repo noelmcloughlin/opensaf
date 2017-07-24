@@ -44,7 +44,7 @@ opensaf_build:
     - cwd: {{ opensaf.source.prefix }}/src/opensaf-{{ opensaf.source.version }}
     - name: make {{opensaf.source.make_flags }}
     - require_in:
-      - opensaf_install
+      - cmd: opensaf_install
       - opensaf_repo_install
     - require:
       - cmd: opensaf_make_configure
@@ -69,9 +69,9 @@ opensaf_link:
       - cmd: opensaf_install
     - onchanges:
       - cmd: opensaf_install
-{% endif %}
+{% else %}
 
-{% if opensaf.lookup.install_from_rpm %}
+   {% if opensaf.lookup.install_from_rpm %}
 opensaf_create_repo:
   cmd.run:
     - name: createrepo {{ opensaf.source.repodir }}
@@ -79,5 +79,6 @@ opensaf_create_repo:
       - cmd: opensaf_build
     - onchanges:
       - cmd: opensaf_build
+   {% endif %}
 {% endif %}
 
