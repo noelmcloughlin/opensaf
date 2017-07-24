@@ -24,12 +24,13 @@ opensaf_source_build_deps:
   {% endif %}
      ## install build deps for other distros
 
-
-opensaf_download:
+opensaf-archive-extracted:
   archive.extracted:
     - name: {{ opensaf.source.prefix }}/src
     - source: {{ opensaf.source.url }}
+  {% if grains['saltversion'] > '2016.11.6' and opensaf.source.urlhash %}
     - source_hash: {{ opensaf.source.urlhash }}
+  {% endif %}
     - archive_format: {{ opensaf.source.archive_type }}
   {% if grains['saltversion'] < '2016.11.0' or opensaf.lookup.use_make_install %}
     - tar_options: {{ opensaf.source.unpack_opts }}
@@ -40,12 +41,25 @@ opensaf_download:
     - onchanges:
       - cmd: opensaf_source_build_deps
 
+{% if grains['saltversion'] <= '2016.11.6' and opensaf.source_hash %}
+    # See: https://github.com/saltstack/salt/pull/41914
+opensaf-check-archive-hash:
+  module.run:
+    - name: file.check_hash
+    - path: {{ archive_file }}
+    - file_hash: {{ opensaf.source.urlhash }}
+    - onchanges:
+      - cmd: opensaf-archive-extracted
+    - require_in:
+      - cmd: opensaf_make_configure
+{%- endif %}
+
 opensaf_make_configure:
   cmd.run:
     - cwd: {{ opensaf.source.prefix }}/src/opensaf-{{ opensaf.version }}
     - name: ./configure {{ opensaf.source.configure_flags }} {{ opensaf.source.opts | join(' ') }}
     - require:
-      - archive: opensaf_download
+      - archive: opensaf-archive-extracted
 
 opensaf_build:
   cmd.run:
