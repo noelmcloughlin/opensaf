@@ -7,11 +7,11 @@
 
 include:
   - opensaf.src
-  {% if opensaf.lookup.install_from_rpm %}
-  - opensaf.rpm
+  {% if opensaf.lookup.use_make_install == False %}
+  - opensaf.pkg
   {% endif %}
 
-{% if opensaf.lookup.install_from_source %}
+{% if opensaf.lookup.use_make_install %}
 opensaf_systemd_service_file:
   file.managed:
     - name: /lib/systemd/system/{{ opensaf.service.name }}.service
@@ -20,8 +20,8 @@ opensaf_systemd_service_file:
   
 opensaf_env_file:
   file.managed:
-    - name: /etc/profile.d/opensaf-as-app.sh
-    - source: salt://opensaf/files/opensaf-as-app.sh
+    - name: /etc/profile.d/opensaf.sh
+    - source: salt://opensaf/files/opensaf.sh
     - template: jinja
     - force: True
     - context:
@@ -34,11 +34,11 @@ opensaf_service:
     - enable: {{ opensaf.service.enable }}
     - require:
       - sls: opensaf.src
-      {% if opensaf.lookup.install_from_rpm %}
+      {% if opensaf.lookup.use_make_install == False %}
       - sls: opensaf.rpm
       {% endif %}
     - listen:
-      {% if opensaf.lookup.install_from_source %}
+      {% if opensaf.lookup.use_make_install %}
       - cmd: opensaf_install
       {% else %}
       - pkg: opensaf_pkg_install

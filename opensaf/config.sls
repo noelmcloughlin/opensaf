@@ -4,7 +4,7 @@
 
 {% from 'opensaf/map.jinja' import opensaf, sls_block with context %}
 
-{% if opensaf.lookup.install_from_source %}
+{% if opensaf.lookup.use_make_install %}
          ###### Todo: Check if opensaf uses syslog or not ??
 opensaf_log_dir:
   file.directory:

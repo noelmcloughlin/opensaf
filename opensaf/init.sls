@@ -25,7 +25,7 @@ extend:
     file:
       - require:
         - cmd: opensaf_build
-        {% if opensaf.lookup.install_from_source %}
+        {% if opensaf.lookup.use_make_install %}
         - cmd: opensaf_install
         {% else %}
         - pkg: opensaf_pkg_install
@@ -34,7 +34,7 @@ extend:
     file:
       - require:
         - cmd: opensaf_build
-        {% if opensaf.lookup.install_from_source %}
+        {% if opensaf.lookup.use_make_install %}
         - cmd: opensaf_install
         {% else %}
         - pkg: opensaf_pkg_install
@@ -43,7 +43,7 @@ extend:
     file:
       - require:
         - cmd: opensaf_build
-        {% if opensaf.lookup.install_from_source %}
+        {% if opensaf.lookup.use_make_install %}
         - cmd: opensaf_install
         {% else %}
         - pkg: opensaf_pkg_install
@@ -52,7 +52,7 @@ extend:
     file:
       - require:
         - cmd: opensaf_build
-        {% if opensaf.lookup.install_from_source %}
+        {% if opensaf.lookup.use_make_install %}
         - cmd: opensaf_install
         {% else %}
         - pkg: opensaf_pkg_install

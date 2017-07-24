@@ -7,34 +7,36 @@
 {% set opensaf = salt['pillar.get']('opensaf', {
     'lookup': salt['grains.filter_by']({
         'CentOS': {
-            'install_from_rpm': True,
-            'install_from_source': False,
+            'build_from_source': True,
+            'use_make_install': False,
+            'use_make_rpm': True
         },
         'RedHat': {
-            'install_from_rpm': True,
-            'install_from_source': False,
+            'build_from_source': True,
+            'use_make_install': False,
+            'use_make_rpm': True
         },
         'Suse': {
-            'install_from_rpm': True,
-            'install_from_source': False,
+            'build_from_source': True,
+            'use_make_install': False,
+            'use_make_rpm': True
         },
         'Debian': {
-            'install_from_rpm': False,
-            'install_from_source': True,
+            'build_from_source': True,
+            'use_make_install': True,
         },
         'Arch': {
-            'install_from_rpm': False,
-            'install_from_source': True,
+            'build_from_source': True,
+            'use_make_install': True,
         },
         'Gentoo': {
-            'install_from_rpm': False,
-            'install_from_source': True,
+            'build_from_source': True,
+            'use_make_install': True,
         },
     }, default='Debian' ),
-    'build_from_source': True,
+    'version': '5.2.0',
     'source': {
         'opts': {},
-        'version': '5.2.0',
         'archive_type': 'tar',
         'url': 'https://downloads.sourceforge.net/project/opensaf/releases/opensaf-5.2.0.tar.gz',
         'urlhash': 'sha1=fae4ec60517f7c7f5ad07772a487826d1bb34e15',
