@@ -28,20 +28,23 @@ opensaf-archive-extracted:
   archive.extracted:
     - name: {{ opensaf.source.prefix }}/src
     - source: {{ opensaf.source.url }}
-  {% if grains['saltversion'] > '2016.11.6' and opensaf.source.urlhash %}
+    - archive_format: {{ opensaf.source.archive_type }}
+  {% if grains['saltversioninfo'] > [2016, 11, 6] and opensaf.source_hash %}
     - source_hash: {{ opensaf.source.urlhash }}
   {% endif %}
-    - archive_format: {{ opensaf.source.archive_type }}
-  {% if grains['saltversion'] < '2016.11.0' or opensaf.lookup.use_make_install %}
+  {% if grains['saltversioninfo'] < [2016, 11, 0] and opensaf.lookup.use_make_install %}
     - tar_options: {{ opensaf.source.unpack_opts }}
     - if_missing: {{ opensaf.source.prefix }}/lib/opensaf/opensafd-{{ opensaf.version }}
+  {% endif %}
+  {% if grains['saltversioninfo'] > [2016, 11, 0] and opensaf.lookup.use_make_install %}
+    - options: {{ opensaf.source.unpack_opts }}
   {% endif %}
     - require:
       - cmd: opensaf_source_build_deps
     - onchanges:
       - cmd: opensaf_source_build_deps
 
-{% if grains['saltversion'] <= '2016.11.6' and opensaf.source_hash %}
+  {% if grains['saltversioninfo'] <= [2016, 11, 6] and opensaf.source_hash %}
     # See: https://github.com/saltstack/salt/pull/41914
 opensaf-check-archive-hash:
   module.run:
@@ -52,7 +55,7 @@ opensaf-check-archive-hash:
       - cmd: opensaf-archive-extracted
     - require_in:
       - cmd: opensaf_make_configure
-{%- endif %}
+  {%- endif %}
 
 opensaf_make_configure:
   cmd.run:
